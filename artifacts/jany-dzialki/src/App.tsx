@@ -252,11 +252,11 @@ function LandingPage() {
               OGŁOSZENIE PRYWATNE
             </span>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-serif mb-6 leading-tight text-white drop-shadow-md">
-              Twoje miejsce na ziemi.<br />
+              Działki budowlane<br />
               <span className="text-secondary font-light italic">Jany, Zielona Góra</span>
             </h1>
             <p className="text-lg md:text-2xl text-gray-100 mb-10 max-w-2xl mx-auto font-light drop-shadow">
-              Prywatna sprzedaż działek budowlanych na cichych, zielonych obrzeżach miasta. Zbuduj dom w otoczeniu lasów i łąk.
+              Prywatna sprzedaż działek budowlanych 10-30 arów w Janach przy Zielonej Górze. Zbuduj dom w otoczeniu lasów i łąk.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button data-testid="link-oferta" size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 py-6 text-lg w-full sm:w-auto shadow-lg" onClick={() => document.getElementById('oferta')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -289,9 +289,9 @@ function LandingPage() {
           variants={fadeIn}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold font-serif mb-6 text-foreground">Oferta i cennik</h2>
+          <h2 className="text-3xl md:text-5xl font-bold font-serif mb-6 text-foreground">Działki Jany - oferta i cennik</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Działki (282/7 i 282/9) w strefie zabudowy jednorodzinnej. Możliwość zakupu całości lub podziału na mniejsze parcele. Pozostało <strong>5 działek</strong> do wyboru!
+            Działki budowlane w Janach przy Zielonej Górze (282/7 i 282/9) w strefie zabudowy jednorodzinnej. Możliwość zakupu całości lub podziału na mniejsze parcele. Pozostało <strong>5 działek</strong> do wyboru!
           </p>
         </motion.div>
 
