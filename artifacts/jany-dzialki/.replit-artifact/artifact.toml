@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Działki Jany – Zielona Góra"
+version = "1.0.0"
+id = "artifacts/jany-dzialki"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18675
+
+[services.development]
+run = "pnpm --filter @workspace/jany-dzialki run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/jany-dzialki", "run", "build" ]
+publicDir = "artifacts/jany-dzialki/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18675"
+BASE_PATH = "/"

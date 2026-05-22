@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "n0uhiEJi93EcjF8fEOdhm"
+uri = "file://artifacts/jany-dzialki/public/plot.png"
+type = "image"
+title = "Lush green building plot"
+
+[[generated]]
+id = "-TZQ96DzfCA67lAEKHTRS"
+uri = "file://artifacts/jany-dzialki/public/sports-field.png"
+type = "image"
+title = "Neighborhood sports field"
+
+[[generated]]
+id = "J2tAxmvo4OXQ1hJV9dHzD"
+uri = "file://artifacts/jany-dzialki/public/outdoor-gym.png"
+type = "image"
+title = "Outdoor gym in park"
+
+[[generated]]
+id = "zsCZlg7ysgr6OTWh70YJX"
+uri = "file://artifacts/jany-dzialki/public/pergola.png"
+type = "image"
+title = "Wooden pergola with grill"
