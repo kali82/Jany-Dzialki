@@ -43,9 +43,14 @@ const staggerContainer = {
 
 const galleryImages = [
   {
+    src: "/lokalizacja-ulica.png",
+    title: "Widok z drogi – działki zaznaczone strzałkami",
+    desc: "Widok z ulicy na działki 282/7 i 282/9 – strzałkami zaznaczono ich granice. Otwarta przestrzeń z doskonałym dojazdem."
+  },
+  {
     src: "/mapa-dzialki.png",
-    title: "Widok z lotu ptaka",
-    desc: "Czerwonymi ramkami zaznaczono dwie działki (282/7 i 282/9) – każda po 30 arów"
+    title: "Widok lotniczy okolicy",
+    desc: "Lotniczy widok dzielnicy Jany – strzałkami zaznaczono lokalizację obu działek pośród spokojnej zabudowy jednorodzinnej"
   },
   {
     src: "/wizualizacja-osiedla.png",
@@ -348,35 +353,52 @@ function LandingPage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4 text-foreground">Lokalizacja działek</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Widok satelitarny – dwie działki (282/7 i 282/9) zaznaczone na czerwono. Każda po 30 arów, z możliwością podziału na 3 parcele po 10 arów z drogą dojazdową.
+              Działki 282/7 i 282/9 – zaznaczone strzałkami na zdjęciach. Każda po 30 arów, z możliwością podziału na 3 parcele po 10 arów z drogą dojazdową.
             </p>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="relative rounded-2xl overflow-hidden shadow-2xl cursor-zoom-in"
-            onClick={() => setLightboxIndex(0)}
-          >
-            <img
-              src="/mapa-dzialki.png"
-              alt="Mapa satelitarna działek Jany Zielona Góra"
-              className="w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 text-white flex flex-wrap gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-red-500 bg-red-500/20 rounded-sm" />
-                <span className="text-sm font-medium">Działka 282/7</span>
+          <div className="grid md:grid-cols-2 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="relative rounded-2xl overflow-hidden shadow-2xl cursor-zoom-in group"
+              onClick={() => setLightboxIndex(0)}
+            >
+              <img
+                src="/lokalizacja-ulica.png"
+                alt="Widok z drogi na działki Jany"
+                className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                <p className="font-bold text-base mb-0.5">Widok z drogi dojazdowej</p>
+                <p className="text-white/70 text-sm">Strzałki wskazują lokalizację działek</p>
+                <p className="text-white/40 text-xs mt-1">Kliknij, aby powiększyć</p>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-red-500 bg-red-500/20 rounded-sm" />
-                <span className="text-sm font-medium">Działka 282/9</span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              viewport={{ once: true }}
+              className="relative rounded-2xl overflow-hidden shadow-2xl cursor-zoom-in group"
+              onClick={() => setLightboxIndex(1)}
+            >
+              <img
+                src="/mapa-dzialki.png"
+                alt="Widok lotniczy działek Jany Zielona Góra"
+                className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                <p className="font-bold text-base mb-0.5">Widok lotniczy okolicy</p>
+                <p className="text-white/70 text-sm">Strzałki wskazują lokalizację obu działek</p>
+                <p className="text-white/40 text-xs mt-1">Kliknij, aby powiększyć</p>
               </div>
-              <span className="text-white/60 text-sm ml-auto">Kliknij, aby powiększyć</span>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
