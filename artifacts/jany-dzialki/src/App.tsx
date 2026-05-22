@@ -407,15 +407,14 @@ function LandingPage() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="cursor-zoom-in flex justify-center"
+            className="cursor-zoom-in"
             onClick={() => setLightboxIndex(1)}
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-sm" style={{ maxHeight: '700px' }}>
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src="/wizualizacja-osiedla.png"
                 alt="Wizualizacja zabudowy na działkach"
-                className="w-full h-full object-cover object-center"
-                style={{ maxHeight: '700px' }}
+                className="w-full object-cover"
               />
               <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
                 Wizualizacja poglądowa
