@@ -328,14 +328,14 @@ function LandingPage() {
             <h3 className="text-2xl font-bold font-serif mb-4 relative z-10">30 arów (całość)</h3>
             <p className="text-primary-foreground/80 mb-6 relative z-10">Pełna działka 3210 m² – dla szukających przestrzeni lub jako inwestycja deweloperska.</p>
             <div className="mb-8 relative z-10">
-              <span className="text-4xl font-bold text-white">570 000 zł</span>
-              <span className="text-primary-foreground/80 block text-sm mt-1">180 zł/m² • Możliwość podziału na 3 działki po 10 arów</span>
+              <span className="text-4xl font-bold text-white">520 000 zł</span>
+              <span className="text-primary-foreground/80 block text-sm mt-1">ok. 162 zł/m² • 20 000 zł taniej niż 3 działki po 10 arów</span>
             </div>
             <ul className="space-y-3 mb-8 relative z-10 text-primary-foreground/90">
               <li className="flex items-center gap-3"><Check className="text-secondary w-5 h-5" /><span>Pełna powierzchnia 3210 m²</span></li>
               <li className="flex items-center gap-3"><Check className="text-secondary w-5 h-5" /><span>Możliwość budowy do 3 domów</span></li>
               <li className="flex items-center gap-3"><Check className="text-secondary w-5 h-5" /><span>Świetna lokata kapitału</span></li>
-              <li className="flex items-center gap-3"><Check className="text-secondary w-5 h-5" /><span>Negocjacja ceny przy całości</span></li>
+              <li className="flex items-center gap-3"><Check className="text-secondary w-5 h-5" /><span>Niższa cena przy zakupie całości</span></li>
             </ul>
             <Button data-testid="button-zapytaj-30" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground relative z-10" onClick={() => document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' })}>
               Wybieram tę opcję
