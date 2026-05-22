@@ -5,11 +5,17 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm run dev:web` — run the Jany Działki frontend; `/api` requests proxy to `API_PROXY_URL` or `http://localhost:5000`
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
+- `pnpm start` — run the API server, which also serves `artifacts/jany-dzialki/dist/public` when it exists
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required DB env: `DATABASE_URL` — Postgres connection string
+- Required contact form env: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO`
+- Optional contact form env: `SMTP_SECURE`, `SMTP_REQUIRE_TLS`, `CONTACT_FROM`, `CONTACT_RATE_LIMIT_MAX`, `SMTP_TIMEOUT_MS`
+- Render deploy: `render.yaml` builds with `pnpm run render:build` and starts with `pnpm start`; set SMTP secrets in Render before first deploy.
+- Render note: Gmail SMTP uses ports 465/587, so direct SMTP requires a paid Render web service. Free Render web services block outbound SMTP ports.
 
 ## Stack
 

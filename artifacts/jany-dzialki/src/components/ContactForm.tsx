@@ -20,7 +20,10 @@ const formSchema = z.object({
   phone: z.string().min(9, { message: "Podaj prawidłowy numer telefonu." }),
   email: z.string().email({ message: "Podaj prawidłowy adres e-mail." }),
   message: z.string().min(10, { message: "Wiadomość musi mieć co najmniej 10 znaków." }),
+  website: z.string().optional(),
 });
+
+type ContactFormValues = z.infer<typeof formSchema>;
 
 export function ContactForm() {
   const { toast } = useToast();
@@ -33,25 +36,67 @@ export function ContactForm() {
       phone: "",
       email: "",
       message: "",
+      website: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: ContactFormValues) {
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        let message = "Nie udało się wysłać wiadomości. Spróbuj ponownie później.";
+
+        try {
+          const data = (await response.json()) as { message?: unknown };
+          if (typeof data.message === "string") {
+            message = data.message;
+          }
+        } catch {
+          // Keep the default message when the API response is not JSON.
+        }
+
+        throw new Error(message);
+      }
+
       toast({
-        title: "Wiadomość wysłana!",
+        title: "Wiadomość wysłana",
         description: "Dziękujemy za kontakt. Skontaktujemy się z Tobą wkrótce.",
       });
       form.reset();
-    }, 1000);
+    } catch (error) {
+      toast({
+        title: "Nie wysłano wiadomości",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <input
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          className="hidden"
+          aria-hidden="true"
+          {...form.register("website")}
+        />
         <FormField
           control={form.control}
           name="name"
