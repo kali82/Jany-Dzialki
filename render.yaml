@@ -6,7 +6,7 @@ services:
     # Direct Gmail SMTP requires a paid Render web service because free web
     # services block outbound SMTP ports 25, 465, and 587.
     plan: starter
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm run render:build
+    buildCommand: corepack enable && corepack prepare pnpm@11.0.9 --activate && pnpm install --frozen-lockfile --ignore-scripts && pnpm run render:build
     startCommand: pnpm start
     healthCheckPath: /api/healthz
     envVars:
