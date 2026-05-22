@@ -1,6 +1,5 @@
 import { Router, type IRouter, type Request } from "express";
 import { logger } from "../lib/logger";
-import { extractEmailAddress, sendMail, type MailMessage, type SmtpConfig } from "../lib/smtp";
 
 type ContactPayload = {
   name: string;
@@ -14,8 +13,17 @@ type ContactValidationResult =
   | { ok: true; payload: ContactPayload }
   | { ok: false; message: string };
 
-type SmtpConfigResult =
-  | { ok: true; config: SmtpConfig }
+type BrevoConfig = {
+  apiKey: string;
+  apiUrl: string;
+  fromEmail: string;
+  fromName: string;
+  toEmail: string;
+  toName?: string;
+};
+
+type BrevoConfigResult =
+  | { ok: true; config: BrevoConfig }
   | { ok: false; missing: string[] };
 
 const router: IRouter = Router();
@@ -24,6 +32,7 @@ const rateLimitWindowMs = 15 * 60 * 1000;
 const rawRateLimitMax = Number(process.env["CONTACT_RATE_LIMIT_MAX"] ?? "5");
 const rateLimitMax =
   Number.isFinite(rawRateLimitMax) && rawRateLimitMax > 0 ? rawRateLimitMax : 5;
+
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
 
 router.post("/contact", async (req, res) => {
@@ -46,12 +55,12 @@ router.post("/contact", async (req, res) => {
     return;
   }
 
-  const smtpConfig = getSmtpConfig();
+  const brevoConfig = getBrevoConfig();
 
-  if (!smtpConfig.ok) {
+  if (!brevoConfig.ok) {
     logger.error(
-      { missingEnv: smtpConfig.missing },
-      "Contact form SMTP configuration is missing",
+      { missingEnv: brevoConfig.missing },
+      "Contact form Brevo configuration is missing",
     );
     res.status(503).json({
       message: "Formularz kontaktowy nie jest jeszcze skonfigurowany.",
@@ -60,10 +69,10 @@ router.post("/contact", async (req, res) => {
   }
 
   try {
-    await sendMail(smtpConfig.config, createContactMail(smtpConfig.config, validation.payload));
+    await sendBrevoContactEmail(brevoConfig.config, validation.payload);
     res.status(202).json({ ok: true });
   } catch (err) {
-    logger.error({ err }, "Contact form email delivery failed");
+    logger.error({ err }, "Contact form Brevo delivery failed");
     res.status(502).json({
       message: "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
     });
@@ -106,70 +115,108 @@ function validateContactPayload(body: unknown): ContactValidationResult {
   return { ok: true, payload };
 }
 
-function getSmtpConfig(): SmtpConfigResult {
+function getBrevoConfig(): BrevoConfigResult {
   const missing: string[] = [];
-  const host = getRequiredEnv("SMTP_HOST", missing);
-  const rawPort = getRequiredEnv("SMTP_PORT", missing);
-  const user = getRequiredEnv("SMTP_USER", missing);
-  const pass = getRequiredEnv("SMTP_PASS", missing);
+  const apiKey = getRequiredEnv("BREVO_API_KEY", missing);
+  const from = getRequiredEnv("CONTACT_FROM", missing);
   const to = getRequiredEnv("CONTACT_TO", missing);
 
   if (missing.length > 0) {
     return { ok: false, missing };
   }
 
-  const port = Number(rawPort);
-
-  if (!Number.isInteger(port) || port <= 0) {
-    return { ok: false, missing: ["SMTP_PORT"] };
-  }
-
-  const secure = parseBooleanEnv("SMTP_SECURE") ?? port === 465;
-  const requireTls = parseBooleanEnv("SMTP_REQUIRE_TLS") ?? !secure;
-  const timeoutMs = Number(process.env["SMTP_TIMEOUT_MS"] ?? "10000");
-  const from = process.env["CONTACT_FROM"]?.trim() || user;
+  const fromAddress = parseAddress(from);
+  const toAddress = parseAddress(to);
 
   return {
     ok: true,
     config: {
-      host,
-      port,
-      secure,
-      requireTls,
-      user,
-      pass,
-      from,
-      to,
-      timeoutMs: Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 10000,
+      apiKey,
+      apiUrl:
+        process.env["BREVO_API_URL"]?.trim() ||
+        "https://api.brevo.com/v3/smtp/email",
+      fromEmail: fromAddress.email,
+      fromName: fromAddress.name || "Formularz Jany Dzialki",
+      toEmail: toAddress.email,
+      toName: toAddress.name,
     },
   };
 }
 
-function createContactMail(config: SmtpConfig, payload: ContactPayload): MailMessage {
+async function sendBrevoContactEmail(
+  config: BrevoConfig,
+  payload: ContactPayload,
+): Promise<void> {
+  const message = createContactMessage(payload);
+  const response = await fetch(config.apiUrl, {
+    method: "POST",
+    headers: {
+      "api-key": config.apiKey,
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      sender: {
+        email: config.fromEmail,
+        name: config.fromName,
+      },
+      to: [
+        {
+          email: config.toEmail,
+          ...(config.toName ? { name: config.toName } : {}),
+        },
+      ],
+      replyTo: {
+        email: payload.email,
+        name: payload.name,
+      },
+      subject: `Nowe zapytanie z formularza - ${payload.name}`,
+      textContent: message.text,
+      htmlContent: message.html,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Brevo API failed with HTTP ${response.status}: ${await truncateResponse(response)}`,
+    );
+  }
+}
+
+function createContactMessage(payload: ContactPayload): { text: string; html: string } {
   const sentAt = new Intl.DateTimeFormat("pl-PL", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "Europe/Warsaw",
   }).format(new Date());
 
+  const fields: Array<[string, string]> = [
+    ["Wysłano", sentAt],
+    ["Imię i nazwisko", payload.name],
+    ["Telefon", payload.phone],
+    ["E-mail", payload.email],
+  ];
+
   return {
-    fromName: "Formularz Jany Działki",
-    fromEmail: extractEmailAddress(config.from),
-    replyToName: payload.name,
-    replyToEmail: payload.email,
-    to: config.to,
-    subject: `Nowe zapytanie z formularza - ${payload.name}`,
     text: [
       "Nowe zapytanie z formularza kontaktowego",
       "",
-      `Wysłano: ${sentAt}`,
-      `Imię i nazwisko: ${payload.name}`,
-      `Telefon: ${payload.phone}`,
-      `E-mail: ${payload.email}`,
+      ...fields.map(([label, value]) => `${label}: ${value}`),
       "",
       "Wiadomość:",
       payload.message,
     ].join("\n"),
+    html: [
+      "<h2>Nowe zapytanie z formularza kontaktowego</h2>",
+      "<dl>",
+      ...fields.map(
+        ([label, value]) =>
+          `<dt><strong>${escapeHtml(label)}</strong></dt><dd>${escapeHtml(value)}</dd>`,
+      ),
+      "</dl>",
+      "<p><strong>Wiadomość:</strong></p>",
+      `<p>${escapeHtml(payload.message).replace(/\n/g, "<br>")}</p>`,
+    ].join(""),
   };
 }
 
@@ -186,16 +233,6 @@ function getRequiredEnv(name: string, missing: string[]): string {
   }
 
   return value;
-}
-
-function parseBooleanEnv(name: string): boolean | undefined {
-  const value = process.env[name]?.trim().toLowerCase();
-
-  if (!value) {
-    return undefined;
-  }
-
-  return ["1", "true", "yes", "tak"].includes(value);
 }
 
 function getRateLimitKey(req: Request): string {
@@ -222,6 +259,35 @@ function cleanupRateLimitBuckets(now: number): void {
       rateLimitBuckets.delete(key);
     }
   }
+}
+
+function parseAddress(value: string): { email: string; name?: string } {
+  const match = value.match(/^\s*(?:"?([^"<]*)"?\s*)?<([^>]+)>\s*$/);
+
+  if (match) {
+    const name = match[1]?.trim();
+
+    return {
+      email: match[2].trim(),
+      ...(name ? { name } : {}),
+    };
+  }
+
+  return { email: value.trim() };
+}
+
+async function truncateResponse(response: Response): Promise<string> {
+  const text = await response.text();
+  return text.length > 500 ? `${text.slice(0, 500)}...` : text;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 export default router;
