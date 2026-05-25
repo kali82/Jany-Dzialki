@@ -45,32 +45,44 @@ const galleryImages = [
   {
     src: "/lokalizacja-ulica.png",
     title: "Widok z drogi – działki zaznaczone strzałkami",
-    desc: "Widok z ulicy na działki 282/7 i 282/9 – strzałkami zaznaczono ich granice. Otwarta przestrzeń z doskonałym dojazdem."
+    desc: "Widok z ulicy na działki 282/7 i 282/9 – strzałkami zaznaczono ich granice. Otwarta przestrzeń z doskonałym dojazdem.",
+    width: 1534,
+    height: 618,
   },
   {
     src: "/mapa-dzialki.png",
     title: "Widok lotniczy okolicy",
-    desc: "Lotniczy widok dzielnicy Jany – strzałkami zaznaczono lokalizację obu działek pośród spokojnej zabudowy jednorodzinnej"
+    desc: "Lotniczy widok dzielnicy Jany – strzałkami zaznaczono lokalizację obu działek pośród spokojnej zabudowy jednorodzinnej",
+    width: 1288,
+    height: 572,
   },
   {
     src: "/wizualizacja-osiedla.png",
     title: "Wizualizacja zabudowy",
-    desc: "Przykład zagospodarowania: 3 domy na każdej działce, po 10 arów każdy"
+    desc: "Przykład zagospodarowania: 3 domy na każdej działce, po 10 arów każdy",
+    width: 1408,
+    height: 768,
   },
   {
     src: "/boisko-silownia.png",
     title: "Kompleks sportowy i siłownia",
-    desc: "Boisko Orlik z boiskami do piłki nożnej, koszykówki i siatkówki oraz siłownia plenerowa – zaledwie 100 m od działek"
+    desc: "Boisko Orlik z boiskami do piłki nożnej, koszykówki i siatkówki oraz siłownia plenerowa – zaledwie 100 m od działek",
+    width: 1603,
+    height: 621,
   },
   {
     src: "/plac-zabaw.png",
     title: "Nowoczesny plac zabaw",
-    desc: "Duży, dobrze wyposażony plac zabaw w sąsiedztwie"
+    desc: "Duży, dobrze wyposażony plac zabaw w sąsiedztwie",
+    width: 1231,
+    height: 609,
   },
   {
     src: "/pole-golfowe.png",
     title: "Pole golfowe Przytok",
-    desc: "Profesjonalne pole golfowe w Przytoku – zaledwie 2 km od działek"
+    desc: "Profesjonalne pole golfowe w Przytoku – zaledwie 2 km od działek",
+    width: 1200,
+    height: 628,
   },
 ];
 
@@ -119,6 +131,8 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
             key={index}
             src={images[index].src}
             alt={images[index].title}
+            width={images[index].width}
+            height={images[index].height}
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -144,18 +158,24 @@ const slideshowItems = [
     label: "Kompleks sportowy Orlik",
     sub: "100 m od działki",
     icon: Dumbbell,
+    width: 1603,
+    height: 621,
   },
   {
     src: "/plac-zabaw.png",
     label: "Nowoczesny plac zabaw",
     sub: "Tuż za rogiem",
     icon: Baby,
+    width: 1231,
+    height: 609,
   },
   {
     src: "/pole-golfowe.png",
     label: "Pole golfowe Przytok",
     sub: "Zaledwie 2 km",
     icon: Flag,
+    width: 1200,
+    height: 628,
   },
 ];
 
@@ -184,6 +204,18 @@ const faqItems = [
     question: "Jak umówić oglądanie działki?",
     answer: "Najprościej zadzwonić pod numer 530 335 264 albo wysłać wiadomość przez formularz kontaktowy na stronie.",
   },
+  {
+    question: "Czy można kupić działkę około 10 arów?",
+    answer: "Tak. Działki 30 arów można kupić w całości albo jako mniejsze części po około 10 arów, zależnie od dostępności i uzgodnień z właścicielem.",
+  },
+  {
+    question: "Czy działki mają dobry dojazd do Zielonej Góry?",
+    answer: "Tak. Lokalizacja w Janach pozwala zachować spokojne otoczenie, a jednocześnie korzystać z dojazdu do Zielonej Góry i komunikacji MZK w pobliżu.",
+  },
+  {
+    question: "Czy to sprzedaż bez pośredników?",
+    answer: "Tak. To prywatna sprzedaż działek, dlatego pytania o cenę, dostępność i oględziny trafiają bezpośrednio do właściciela.",
+  },
 ];
 
 function Slideshow() {
@@ -199,6 +231,8 @@ function Slideshow() {
           key={current}
           src={slideshowItems[current].src}
           alt={slideshowItems[current].label}
+          width={slideshowItems[current].width}
+          height={slideshowItems[current].height}
           loading="lazy"
           decoding="async"
           initial={{ opacity: 0, x: 40 }}
@@ -270,10 +304,29 @@ function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        <header className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <a href="/" className="inline-flex items-center gap-3 text-white drop-shadow-md" aria-label="Działki Jany - strona główna">
+              <span className="w-10 h-10 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-sm">
+                <Home className="w-5 h-5" />
+              </span>
+              <span className="font-bold text-lg md:text-xl">Działki Jany</span>
+            </a>
+            <button
+              type="button"
+              className="hidden sm:inline-flex text-sm font-bold text-white hover:text-secondary transition-colors"
+              onClick={() => document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Kontakt z właścicielem
+            </button>
+          </div>
+        </header>
         <div className="absolute inset-0 z-0">
           <img
             src="/plot.png"
             alt="Działki budowlane Jany Zielona Góra"
+            width={1408}
+            height={768}
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover object-center"
@@ -426,6 +479,58 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Search Intent Section */}
+      <section className="py-20 px-6 bg-muted border-b border-border">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="mb-10"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4 text-foreground">
+              Działki budowlane pod dom i inwestycję
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl">
+              Oferta jest przygotowana dla osób, które szukają działki pod budowę domu w okolicy Zielonej Góry, ale chcą mieć więcej zieleni, ciszy i przestrzeni niż przy typowej miejskiej zabudowie.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-4"
+          >
+            {[
+              {
+                title: "Działka z mediami",
+                text: "Woda przy działce, prąd przy granicy i gaz około 50 m od terenu ułatwiają planowanie budowy.",
+              },
+              {
+                title: "Około 10 arów",
+                text: "Mniejsza parcela pasuje pod dom jednorodzinny z ogrodem i rozsądnym budżetem zakupu.",
+              },
+              {
+                title: "30 arów inwestycyjnie",
+                text: "Pełna działka 3210 m² daje więcej przestrzeni i możliwość zaplanowania kilku domów.",
+              },
+              {
+                title: "Sprzedaż prywatna",
+                text: "Kontaktujesz się bezpośrednio z właścicielem, bez przebijania się przez ogłoszenia portali.",
+              },
+            ].map((item) => (
+              <motion.article key={item.title} variants={fadeIn} className="bg-background rounded-xl p-6 border border-border shadow-sm">
+                <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.text}</p>
+              </motion.article>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* Aerial Map Section */}
       <section className="bg-muted py-20 px-6 border-y border-border">
         <div className="max-w-6xl mx-auto">
@@ -450,6 +555,8 @@ function LandingPage() {
               <img
                 src="/lokalizacja-ulica.png"
                 alt="Widok z drogi na działki Jany"
+                width={1534}
+                height={618}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
@@ -473,6 +580,8 @@ function LandingPage() {
               <img
                 src="/mapa-dzialki.png"
                 alt="Widok lotniczy działek Jany Zielona Góra"
+                width={1288}
+                height={572}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
@@ -522,6 +631,8 @@ function LandingPage() {
               <img
                 src="/wizualizacja-osiedla.png"
                 alt="Wizualizacja zabudowy na działkach"
+                width={1408}
+                height={768}
                 loading="lazy"
                 decoding="async"
                 className="w-full object-cover"
@@ -562,6 +673,8 @@ function LandingPage() {
                 <img
                   src={img.src}
                   alt={img.title}
+                  width={img.width}
+                  height={img.height}
                   loading="lazy"
                   decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
