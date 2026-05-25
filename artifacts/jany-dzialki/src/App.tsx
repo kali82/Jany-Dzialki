@@ -91,6 +91,7 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
     >
       <button
         data-testid="button-lightbox-close"
+        aria-label="Zamknij galerię"
         className="absolute top-4 right-4 text-white/70 hover:text-white z-10"
         onClick={onClose}
       >
@@ -98,6 +99,7 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
       </button>
       <button
         data-testid="button-lightbox-prev"
+        aria-label="Poprzednie zdjęcie"
         className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-10 bg-black/30 rounded-full p-2"
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
       >
@@ -105,6 +107,7 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
       </button>
       <button
         data-testid="button-lightbox-next"
+        aria-label="Następne zdjęcie"
         className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-10 bg-black/30 rounded-full p-2"
         onClick={(e) => { e.stopPropagation(); onNext(); }}
       >
@@ -116,6 +119,8 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
             key={index}
             src={images[index].src}
             alt={images[index].title}
+            loading="eager"
+            decoding="async"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -154,6 +159,33 @@ const slideshowItems = [
   },
 ];
 
+const faqItems = [
+  {
+    question: "Czy to są działki budowlane przy Zielonej Górze?",
+    answer: "Tak. Działki 282/7 i 282/9 znajdują się w Janach przy Zielonej Górze, w spokojnej lokalizacji z dojazdem do miasta.",
+  },
+  {
+    question: "Jakie działki są dostępne na sprzedaż?",
+    answer: "Dostępne są działki po około 10 arów oraz działka 30 arów. Możliwy jest zakup mniejszej działki pod dom albo większego terenu jako inwestycji.",
+  },
+  {
+    question: "Jakie media są przy działce?",
+    answer: "Woda jest dostępna bezpośrednio przy działce, prąd przy granicy działki, a gaz w odległości około 50 metrów.",
+  },
+  {
+    question: "Ile kosztuje działka budowlana w Janach?",
+    answer: "Działka około 1070 m² kosztuje 180 000 zł, czyli 180 zł/m². Działka 30 arów kosztuje 520 000 zł.",
+  },
+  {
+    question: "Czy lokalizacja nadaje się pod dom jednorodzinny?",
+    answer: "Tak. Teren jest przeznaczony pod zabudowę jednorodzinną, a okolica ma lasy, łąki, plac zabaw, Orlik i pole golfowe w pobliżu.",
+  },
+  {
+    question: "Jak umówić oglądanie działki?",
+    answer: "Najprościej zadzwonić pod numer 530 335 264 albo wysłać wiadomość przez formularz kontaktowy na stronie.",
+  },
+];
+
 function Slideshow() {
   const [current, setCurrent] = useState(0);
 
@@ -167,6 +199,8 @@ function Slideshow() {
           key={current}
           src={slideshowItems[current].src}
           alt={slideshowItems[current].label}
+          loading="lazy"
+          decoding="async"
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -40 }}
@@ -198,6 +232,7 @@ function Slideshow() {
       </AnimatePresence>
       <button
         data-testid="button-slideshow-prev"
+        aria-label="Poprzednie zdjęcie"
         onClick={prev}
         className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors"
       >
@@ -205,6 +240,7 @@ function Slideshow() {
       </button>
       <button
         data-testid="button-slideshow-next"
+        aria-label="Następne zdjęcie"
         onClick={next}
         className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors"
       >
@@ -215,6 +251,7 @@ function Slideshow() {
           <button
             key={i}
             data-testid={`button-slide-dot-${i}`}
+            aria-label={`Pokaż zdjęcie ${i + 1}`}
             onClick={() => setCurrent(i)}
             className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-secondary w-5" : "bg-white/50"}`}
           />
@@ -228,7 +265,8 @@ function LandingPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-white">
+    <>
+      <main className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-white">
 
       {/* Hero Section */}
       <section className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -236,6 +274,8 @@ function LandingPage() {
           <img
             src="/plot.png"
             alt="Działki budowlane Jany Zielona Góra"
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
@@ -291,7 +331,7 @@ function LandingPage() {
         >
           <h2 className="text-3xl md:text-5xl font-bold font-serif mb-6 text-foreground">Działki Jany - oferta i cennik</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Działki budowlane w Janach przy Zielonej Górze (282/7 i 282/9) w strefie zabudowy jednorodzinnej. Możliwość zakupu całości lub podziału na mniejsze parcele. Pozostało <strong>5 działek</strong> do wyboru!
+            Działki budowlane w Janach przy Zielonej Górze (282/7 i 282/9) w strefie zabudowy jednorodzinnej. Możliwość zakupu całości lub podziału na mniejsze części. Pozostało <strong>5 działek</strong> do wyboru!
           </p>
         </motion.div>
 
@@ -344,6 +384,48 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Local Search Section */}
+      <section id="dzialki-zielona-gora" className="py-20 px-6 border-y border-border bg-background">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-start"
+          >
+            <div>
+              <motion.span variants={fadeIn} className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-bold tracking-wider mb-4">
+                DZIAŁKI ZIELONA GÓRA
+              </motion.span>
+              <motion.h2 variants={fadeIn} className="text-3xl md:text-4xl font-bold font-serif mb-6 text-foreground">
+                Działka budowlana Zielona Góra - Jany
+              </motion.h2>
+              <motion.p variants={fadeIn} className="text-lg text-muted-foreground mb-5">
+                Jeśli szukasz działki budowlanej w Zielonej Górze lub terenu pod dom blisko miasta, Jany dają spokojniejsze otoczenie bez rezygnowania z dojazdu i infrastruktury.
+              </motion.p>
+              <motion.p variants={fadeIn} className="text-lg text-muted-foreground">
+                Oferta obejmuje działki 282/7 i 282/9: mniejsze części po około 10 arów albo pełne 30 arów pod dom jednorodzinny, ogród lub zakup inwestycyjny. To prywatna sprzedaż, więc kontakt trafia bezpośrednio do właściciela.
+              </motion.p>
+            </div>
+
+            <motion.div variants={staggerContainer} className="grid sm:grid-cols-2 gap-3">
+              {[
+                { label: "Lokalizacja", value: "Jany przy Zielonej Górze" },
+                { label: "Powierzchnia", value: "10-30 arów" },
+                { label: "Cena od", value: "180 000 zł" },
+                { label: "Numery działek", value: "282/7 i 282/9" },
+              ].map((item) => (
+                <motion.div key={item.label} variants={fadeIn} className="bg-card border border-card-border rounded-xl p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-bold mb-2">{item.label}</p>
+                  <p className="text-lg font-bold text-foreground">{item.value}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Aerial Map Section */}
       <section className="bg-muted py-20 px-6 border-y border-border">
         <div className="max-w-6xl mx-auto">
@@ -353,7 +435,7 @@ function LandingPage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4 text-foreground">Lokalizacja działek</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Działki 282/7 i 282/9 – zaznaczone strzałkami na zdjęciach. Każda po 30 arów, z możliwością podziału na 3 parcele po 10 arów z drogą dojazdową.
+              Działki 282/7 i 282/9 – zaznaczone strzałkami na zdjęciach. Każda po 30 arów, z możliwością podziału na 3 części po 10 arów z drogą dojazdową.
             </p>
           </motion.div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -368,6 +450,8 @@ function LandingPage() {
               <img
                 src="/lokalizacja-ulica.png"
                 alt="Widok z drogi na działki Jany"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -389,6 +473,8 @@ function LandingPage() {
               <img
                 src="/mapa-dzialki.png"
                 alt="Widok lotniczy działek Jany Zielona Góra"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -415,11 +501,11 @@ function LandingPage() {
               Jak może wyglądać Twoje nowe osiedle?
             </motion.h2>
             <motion.p variants={fadeIn} className="text-lg text-muted-foreground mb-8">
-              Każda z działek po podziale na 3 parcele daje miejsce na 3 domy jednorodzinne z przestronnymi ogrodami. Łącznie obie działki to 6 działek po 10 arów – idealne dla rodziny lub grupy znajomych chcących zamieszkać po sąsiedzku.
+              Każda z działek po podziale na 3 części daje miejsce na 3 domy jednorodzinne z przestronnymi ogrodami. Łącznie obie działki to 6 działek po 10 arów – idealne dla rodziny lub grupy znajomych chcących zamieszkać po sąsiedzku.
             </motion.p>
             <motion.div variants={fadeIn} className="space-y-3">
               <div className="flex items-center gap-3"><Check className="text-secondary w-5 h-5 shrink-0" /><span>Droga dojazdowa wzdłuż działki po prawej stronie</span></div>
-              <div className="flex items-center gap-3"><Check className="text-secondary w-5 h-5 shrink-0" /><span>6 działek łącznie – po 3 z każdej parceli 30a</span></div>
+              <div className="flex items-center gap-3"><Check className="text-secondary w-5 h-5 shrink-0" /><span>6 działek łącznie – po 3 z każdej działki 30a</span></div>
               <div className="flex items-center gap-3"><Check className="text-secondary w-5 h-5 shrink-0" /><span>Strefa zabudowy jednorodzinnej wg. planu ogólnego</span></div>
             </motion.div>
           </motion.div>
@@ -436,6 +522,8 @@ function LandingPage() {
               <img
                 src="/wizualizacja-osiedla.png"
                 alt="Wizualizacja zabudowy na działkach"
+                loading="lazy"
+                decoding="async"
                 className="w-full object-cover"
               />
               <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
@@ -474,6 +562,8 @@ function LandingPage() {
                 <img
                   src={img.src}
                   alt={img.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -585,6 +675,39 @@ function LandingPage() {
         </motion.div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="bg-muted py-20 px-6 border-y border-border">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeIn}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold font-serif mb-4 text-foreground">Najczęstsze pytania o działki</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Konkretne informacje dla osób szukających działki budowlanej w Zielonej Górze i spokojnego terenu pod dom w Janach.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid md:grid-cols-2 gap-4"
+          >
+            {faqItems.map((item) => (
+              <motion.article key={item.question} variants={fadeIn} className="bg-background rounded-xl p-6 border border-border shadow-sm">
+                <h3 className="text-lg font-bold text-foreground mb-3">{item.question}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.answer}</p>
+              </motion.article>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="kontakt" className="bg-primary py-24 px-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl pointer-events-none" />
@@ -634,6 +757,8 @@ function LandingPage() {
         </div>
       </section>
 
+      </main>
+
       <footer className="bg-background py-8 border-t border-border text-center text-muted-foreground">
         <p>© {new Date().getFullYear()} Działki Jany. Ogłoszenie prywatne.</p>
       </footer>
@@ -650,7 +775,7 @@ function LandingPage() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
 
